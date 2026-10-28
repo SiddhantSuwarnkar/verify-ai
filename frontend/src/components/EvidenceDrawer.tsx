@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Finding, DocumentItem, DemoRole } from '../types';
 import { StatusChip } from './StatusChip';
+import { getDocumentFileUrl } from '../services/api';
 
 interface EvidenceDrawerProps {
   finding: Finding | null;
@@ -31,6 +32,7 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
   if (!finding) return null;
 
   const doc = documents.find((d) => d.id === finding.document_id);
+  const documentUrl = doc ? getDocumentFileUrl(doc) : null;
   const canReview = currentRole === 'scrutiny_officer' || currentRole === 'senior_reviewer';
 
   const handleSubmitReview = async () => {
@@ -135,15 +137,17 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
                   <span className="truncate max-w-[280px]">
                     Document: <strong className="text-slate-900">{doc.document_name}</strong>
                   </span>
-                  <a
-                    href={`/documents/${doc.document_name}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 text-blue-700 hover:text-blue-900 font-semibold text-[11px]"
-                  >
-                    <span>Open PDF</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                  {documentUrl && (
+                    <a
+                      href={documentUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-blue-700 hover:text-blue-900 font-semibold text-[11px]"
+                    >
+                      <span>Open PDF</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
                 </div>
               )}
 

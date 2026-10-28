@@ -7,6 +7,7 @@ import {
 } from './localDataService';
 import {
   Application,
+  DocumentItem,
   Finding,
   Alert,
   AuditEvent,
@@ -42,6 +43,17 @@ const CHECK_INTERVAL = 30000;
 
 export const getPersistenceMode = (): 'backend-sqlite' | 'client-storage' => {
   return backendAvailable === true ? 'backend-sqlite' : 'client-storage';
+};
+
+export const getDocumentFileUrl = (document: DocumentItem): string | null => {
+  if (!document.file_path) return null;
+
+  if (backendAvailable === true) {
+    return `${API_BASE_URL}/applications/documents/${encodeURIComponent(document.id)}/file`;
+  }
+
+  const fileName = document.file_path.split(/[\\/]/).pop();
+  return fileName ? `/documents/${encodeURIComponent(fileName)}` : null;
 };
 
 const getHeaders = () => {
